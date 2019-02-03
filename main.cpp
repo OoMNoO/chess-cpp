@@ -4,7 +4,7 @@ using namespace std;
 
 void printboard(char a[8][8]);
 void orginize(char a[8][8]);
-void Rotate(char a[8][8]);
+void Rotate(char a[8][8],int *p);
 void coordinate(int X[2][8],int Y[2][8]);
 void moverook(char a[8][8],int specifier,int direction,int direction2,int length,int X[2][8],int Y[2][8]);
 void movesoldier(char a[8][8],int specifier,int direction,int direction2,int length,int X[2][8],int Y[2][8]);
@@ -17,20 +17,26 @@ void check(char a[8][8],char piece,int specifier,int direction,int direction2,in
 //================================================================================================================================================================
 int main(){
     char a[8][8];
-    int X[2][8],Y[2][8];
+    int X1[2][8],Y1[2][8],X2[2][8],Y2[2][8],player=0;
     for(int i=0;i<8;i++)
         for(int j=0;j<8;j++)
             a[i][j]=' ';
     orginize(a);
-    coordinate(X,Y);
+    coordinate(X1,Y1);
+    coordinate(X2,Y2);
     int P=1,specifier,direction,direction2,length;
     char piece;
     while(P==1){
         printboard(a);
         cin>>piece>>specifier>>direction>>direction2>>length;
-        check(a,piece,specifier,direction,direction2,length,X,Y);
+        if(player){
+            check(a,piece,specifier,direction,direction2,length,X1,Y1);
+        }
+        else{
+            check(a,piece,specifier,direction,direction2,length,X2,Y2);
+        }
         //system("cls");
-        Rotate(a);
+        Rotate(a,&player);
     }
 }
 //================================================================================================================================================================
@@ -67,16 +73,11 @@ void orginize(char a[8][8]){
             a[i][j]='S';
 }
 //================================================================================================================================================================
-void Rotate(char a[8][8]){
+void Rotate(char a[8][8],int *p){
     char b[8][8];
-    for(int i=0,t=7;t>=0;i++,t--){
-        for(int j=0,k=7;k>=0;j++,k--){
+    for(int i=0,t=7;i<8;i++,t--){
+        for(int j=0,k=7;j<8;j++,k--){
             b[i][j]=a[t][k];
-        }
-    }
-    for(int i=0;i<8;i++){
-        for(int j=0;j<8;j++){
-            a[i][j]=' ';
         }
     }
     for(int i=0;i<8;i++){
@@ -84,9 +85,12 @@ void Rotate(char a[8][8]){
             a[i][j]=b[i][j];
         }
     }
-    printboard(b);
-    cout<<endl;
-    return;
+    if(*p){
+        *p=0;
+    }
+    else{
+        *p=1;
+    }
 }
 //================================================================================================================================================================
 void coordinate(int X[2][8],int Y[2][8]){
